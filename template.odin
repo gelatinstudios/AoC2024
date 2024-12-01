@@ -1,8 +1,11 @@
 
-package aoc
+package dayN
 
 import "core:os"
 import "core:fmt"
+import "core:strings"
+import "core:strconv"
+import "core:slice"
 
 main :: proc() {
     data, ok := os.read_entire_file("input.txt")

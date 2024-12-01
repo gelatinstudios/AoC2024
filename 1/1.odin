@@ -1,5 +1,5 @@
 
-package aoc
+package day1
 
 import "core:os"
 import "core:fmt"
