@@ -34,6 +34,18 @@ part1 :: proc(input: string) {
 }
 
 part2 :: proc(input: string) {
+    // unfortunately this match lib is based off of lua's which 
+    // afaict doesn't have any kind of logical OR 
+    // and i don't feel like learning to use odin's regex library
+    // which i already wasted a lot of time to trying to figure out
+    // soooooooooo i did some dumb logic to combine 2 matches
+    
+    // i hate regex
+
+    // if i just wrote a normal parser i would have been done a lot faster
+
+    // here's my slop
+
     Mul :: struct {
         a, b: i32
     }
