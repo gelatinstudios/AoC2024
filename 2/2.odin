@@ -58,6 +58,8 @@ part1 :: proc(input: string) {
 }
 
 part2 :: proc(input: string) {
+    // i really wanted to find a O(n) solution and not do it this way
+    // but who cares it's fast on my machine 😎
     is_safe :: proc(raw_report: []int, ignore: int) -> bool {
         report := slice.clone_to_dynamic(raw_report)
         if ignore >= 0 {
