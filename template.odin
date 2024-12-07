@@ -10,7 +10,7 @@ import "core:slice"
 main :: proc() {
     data, ok := os.read_entire_file("input.txt")
     assert(ok)
-    input := string(data)
+    input := strings.trim_space(string(data))
     part1(input)
     part2(input)
 }
