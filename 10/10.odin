@@ -56,5 +56,23 @@ part1 :: proc(input: string) {
 }
 
 part2 :: proc(input: string) {
-    
+    count_trails :: proc(grid: [][]u8, x, y: int, n: u8) -> int {
+        if !in_bounds(grid, x, y) do return 0
+        if grid[y][x] != n do return 0
+        if n == 9 do return 1
+        result := 0
+        result += count_trails(grid, x+0, y+1, n+1)
+        result += count_trails(grid, x+0, y-1, n+1)
+        result += count_trails(grid, x+1, y+0, n+1)
+        result += count_trails(grid, x-1, y+0, n+1)
+        return result
+    }
+    grid := transmute([][]u8) strings.split_lines(input)
+    sum := 0
+    for line, y in grid {
+        for cell, x in line {
+            sum += count_trails(grid, x, y, 0)
+        }
+    }
+    fmt.println(sum)
 }
