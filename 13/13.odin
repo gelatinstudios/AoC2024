@@ -6,12 +6,13 @@ import "core:fmt"
 import "core:strings"
 import "core:strconv"
 import "core:slice"
+import "core:math/big"
 
 main :: proc() {
     data, ok := os.read_entire_file("input.txt")
     assert(ok)
     input := strings.trim_space(string(data))
-    part1(input)
+    //part1(input)
     part2(input)
 }
 
@@ -101,22 +102,77 @@ part1 :: proc(input: string) {
     pos :: proc(a, b, presses: iv2) -> iv2 {
         return a*presses.x + b*presses.y
     }
-
-    parse_line :: proc(s: string) -> iv2 {
-        it := s
-        result: iv2
-        for &r, i in result {
-            field := strings.split_iterator(&it, ",") or_break
-            j := len(field)-1
-            for '0' <= field[j] && field[j] <= '9' {
-                j -= 1
-            }
-            result[i] = strconv.parse_int(field[j+1:]) or_break
-        }
-        return result
-    } 
 }
+
+parse_line :: proc(s: string) -> iv2 {
+    it := s
+    result: iv2
+    for &r, i in result {
+        field := strings.split_iterator(&it, ",") or_break
+        j := len(field)-1
+        for '0' <= field[j] && field[j] <= '9' {
+            j -= 1
+        }
+        result[i] = strconv.parse_int(field[j+1:]) or_break
+    }
+    return result
+}
+
+// why yes, i did implement Dijkstra's algorithm ito solve part 1
+// why yes, it is in fact very slow (but fast enough to get me the answer)
+// why yes, i did find out that it was too slow for part 2
+// why yes, i did realize that it was just a system of equations
+// gg eric
 
 part2 :: proc(input: string) {
+    total_token_count := 0
+    it := input
+    for line in strings.split_lines_iterator(&it) {
+        a_line := line
+        b_line     := strings.split_lines_iterator(&it) or_break
+        prize_line := strings.split_lines_iterator(&it) or_break
+        strings.split_lines_iterator(&it)
 
+        a := parse_line(a_line)
+        b := parse_line(b_line)
+        prize := parse_line(prize_line)
+
+        prize += 10000000000000
+
+        // Cramer's rule
+        a1 := i128(a.x)
+        a2 := i128(a.y)
+        b1 := i128(b.x)
+        b2 := i128(b.y)
+        c1 := i128(prize.x)
+        c2 := i128(prize.y)
+
+        m1 := f64(-a1)/f64(b1)
+        m2 := f64(-a2)/f64(b2)
+
+        if m1 != m2 {
+            denom := a1*b2 - b1*a2
+            if denom != 0 {
+                a_num := (c1*b2 - b1*c2)
+                if a_num % denom != 0 do continue
+                b_num := (a1*c2 - c1*a2)
+                if b_num % denom != 0 do continue
+                a_presses := int(a_num / denom)
+                b_presses := int(b_num / denom)
+
+                if a_presses * a + b_presses * b == prize {
+                    total_token_count += a_presses*3 + b_presses
+                }
+            }
+        } else if b1 == b2 {
+            fmt.println("Overlap")
+            // overlap
+        } else {
+            // no solution
+            fmt.println("No Solution")
+        }
+    }
+
+    fmt.println(total_token_count)
 }
+
